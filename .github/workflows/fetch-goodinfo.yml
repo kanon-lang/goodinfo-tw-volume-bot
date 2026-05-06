@@ -7,6 +7,10 @@ on:
 
 permissions:
   contents: write
+
+  concurrency:
+  group: goodinfo-top-volume
+  cancel-in-progress: true
   
 jobs:
   fetch:
@@ -41,6 +45,15 @@ jobs:
         run: |
           git config user.name github-actions
           git config user.email github-actions@github.com
-          git add output/goodinfo_top_volume.json
-          git diff --cached --quiet || git commit -m "update goodinfo top volume data"
-          git push
+
+          git add output/goodinfo_top_volume.json output/goodinfo_top_volume_error.txt || true
+
+          if git diff --cached --quiet; then
+            echo "No JSON changes to commit."
+            exit 0
+          fi
+
+          git commit -m "update goodinfo top volume data"
+
+          git pull --rebase origin main
+          git push origin main
