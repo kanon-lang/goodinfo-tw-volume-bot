@@ -8,7 +8,7 @@ on:
 permissions:
   contents: write
 
-  concurrency:
+concurrency:
   group: goodinfo-top-volume
   cancel-in-progress: true
   
